@@ -1,0 +1,27 @@
+{
+  "name": "phw-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.8.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "mysql2": "^3.13.0",
+    "query": "^0.2.0",
+    "react": "^19.0.0",
+    "react-modal": "^3.16.3",
+    "react-router-dom": "^7.3.0",
+    "sass": "^1.85.1"
+  }
+}
