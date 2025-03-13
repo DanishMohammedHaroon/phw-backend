@@ -29,7 +29,7 @@ app.get("/", (_req, res) => {
 // Basic error handling middleware
 app.use((err, _req, res, _next) => {
   console.error(err.stack);
-  res.status(500).send("INternal Server Error");
+  res.status(500).send("Internal Server Error");
 });
 
 app.listen(PORT, () => {
