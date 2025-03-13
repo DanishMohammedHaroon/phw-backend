@@ -9,6 +9,13 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 const knex = initKnex(config);
 
+
+// Logging middleware: Logs method and URL for every request
+app.use((req, res, next) => {
+  console.log(`${req.method} request to ${req.url}`);
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
@@ -19,10 +26,10 @@ app.get("/", (_req, res) => {
 });
 
 
-// Basic error handling middleware (optional)
-app.use((err, req, res, next) => {
+// Basic error handling middleware
+app.use((err, _req, res, _next) => {
   console.error(err.stack);
-  res.status(500).send("Something broke!");
+  res.status(500).send("INternal Server Error");
 });
 
 app.listen(PORT, () => {
