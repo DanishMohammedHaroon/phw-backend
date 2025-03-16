@@ -1,11 +1,12 @@
 import express from "express";
 import users from "../controllers/auth-controller.js";
+import verifyToken from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
 router.post("/register", users.register);
 router.post("/login", users.login);
-// NOTE: profile endpoint; need to add token verification middleware
-router.get("/profile", users.getProfile);
+// NOTE: profile endpoint; with a token verification middleware
+router.get("/profile", verifyToken, users.getProfile);
 
 export default router;
