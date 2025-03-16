@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/register", users.register);
 router.post("/login", users.login);
-// NOTE: profile endpoint; with a token verification middleware
+// NOTE: profile endpoint; **with** a token verification middleware
 router.get("/profile", verifyToken, users.getProfile);
 
 export default router;
