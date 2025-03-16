@@ -4,6 +4,7 @@ import "dotenv/config";
 import initKnex from "knex";
 import config from "./knexfile.js";
 import authRoutes from "./routes/auth-routes.js";
+import exerciseRoutes from "./routes/exercise-routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -21,6 +22,7 @@ app.use(express.json());
 
 // Add routes here
 app.use("/api/auth", authRoutes);
+app.use("/api/exercises", exerciseRoutes);
 
 //test route to check backend
 app.get("/", (_req, res) => {
