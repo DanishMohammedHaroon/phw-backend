@@ -7,11 +7,11 @@ import authRoutes from "./routes/auth-routes.js";
 import feedbackRoutes from "./routes/feedback-routes.js";
 import exerciseRoutes from "./routes/exercise-routes.js";
 import assignmentRoutes from "./routes/assignment-routes.js";
+import progressRoutes from "./routes/progress-routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5050;
 const knex = initKnex(config);
-
 
 // Logging middleware: Logs method and URL for every request
 app.use((req, _res, next) => {
@@ -27,13 +27,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/exercises", exerciseRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/progress", progressRoutes);
 
 //test route to check backend
 app.get("/", (_req, res) => {
   res.send("PHW Backend is running");
 });
-
-
 
 // Basic error handling middleware
 app.use((err, _req, res, _next) => {
