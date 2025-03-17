@@ -4,6 +4,7 @@ import "dotenv/config";
 import initKnex from "knex";
 import config from "./knexfile.js";
 import authRoutes from "./routes/auth-routes.js";
+import feedbackRoutes from "./routes/feedback-routes.js";
 import exerciseRoutes from "./routes/exercise-routes.js";
 import assignmentRoutes from "./routes/assignment-routes.js";
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/exercises", exerciseRoutes);
 app.use("/api/assignments", assignmentRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 //test route to check backend
 app.get("/", (_req, res) => {
