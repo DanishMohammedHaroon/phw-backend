@@ -1,39 +1,29 @@
-const exercises = [
-  {
-    id: 1,
-    name: "Incline Hammer Curls",
-    muscle: "Biceps",
-    difficulty: "Beginner",
-    instructions: "Sit on an incline bench with a dumbbell in each hand.",
-  },
-  {
-    id: 2,
-    name: "Wide-Grip Barbell Curl",
-    muscle: "Biceps",
-    difficulty: "Beginner",
-    instructions:
-      "Stand with your feet shoulder-width apart and curl the barbell.",
-  },
-  {
-    id: 3,
-    name: "Triceps Dip",
-    muscle: "Triceps",
-    difficulty: "Intermediate",
-    instructions: "Use parallel bars or a bench to perform dips.",
-  },
-];
+import knex from "../db/knex.js";
 
-// Controller function to get all exercises
-export const getAllExercises = (req, res) => {
-  res.status(200).json(exercises);
+// Get all exercises from the database
+export const getAllExercises = async (req, res) => {
+  try {
+    // Select all columns from the "exercises" table
+    const exercises = await knex("exercises").select("*");
+    return res.status(200).json(exercises);
+  } catch (error) {
+    console.error("Error fetching exercises:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
-// Controller function to get an exercise by ID
-export const getExerciseById = (req, res) => {
+// Get a single exercise by its exercise_id
+export const getExerciseById = async (req, res) => {
   const { id } = req.params;
-  const exercise = exercises.find((ex) => ex.id === parseInt(id, 10));
-  if (!exercise) {
-    return res.status(404).json({ message: "Exercise not found" });
+  try {
+    // Assuming the unique identifier is stored in the "exercise_id" column
+    const exercise = await knex("exercises").where({ exercise_id: id }).first();
+    if (!exercise) {
+      return res.status(404).json({ message: "Exercise not found" });
+    }
+    return res.status(200).json(exercise);
+  } catch (error) {
+    console.error("Error fetching exercise by id:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-  res.status(200).json(exercise);
 };

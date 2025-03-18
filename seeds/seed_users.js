@@ -1,0 +1,121 @@
+export async function seed(knex) {
+  // Deletes ALL existing entries
+  await knex("users").del();
+
+  const users = [
+    {
+      name: "Aisha Khan",
+      email: "aisha.khan@brain.io",
+      password: "password",
+      role: "physio_therapist",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Raj Patel",
+      email: "raj.patel@brain.io",
+      password: "password",
+      role: "physio_therapist",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Miguel Rodriguez",
+      email: "miguel.rodriguez@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Li Wei",
+      email: "li.wei@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Fatima Al-Hassan",
+      email: "fatima.al-hassan@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Santiago Garcia",
+      email: "santiago.garcia@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Yara Nasser",
+      email: "yara.nasser@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Amir El-Sayed",
+      email: "amir.el-sayed@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Bao Nguyen",
+      email: "bao.nguyen@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Priya Reddy",
+      email: "priya.reddy@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Kwame Mensah",
+      email: "kwame.mensah@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Zara Ibrahim",
+      email: "zara.ibrahim@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Carlos Mendez",
+      email: "carlos.mendez@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      name: "Ananya Singh",
+      email: "ananya.singh@brain.io",
+      password: "password",
+      role: "client",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  ];
+
+  await knex("users").insert(users);
+}
