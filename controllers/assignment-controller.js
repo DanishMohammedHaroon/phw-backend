@@ -28,6 +28,8 @@ export const createAssignment = async (req, res) => {
       sets,
       difficulty,
       instructions,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
     const newAssignment = await knex("assignments").where({ id }).first();
