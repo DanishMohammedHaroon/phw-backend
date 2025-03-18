@@ -45,7 +45,7 @@ export const createAssignment = async (req, res) => {
   }
 };
 
-export const getAssignments = async (req, res) => {
+export const getAssignments = async (_req, res) => {
   try {
     const assignments = await knex("assignments").select("*");
     return res.status(200).json(assignments);
