@@ -1,39 +1,45 @@
-// Dummy in-memory storage for feedbacks
-let feedbacks = [];
+import knex from "../db/knex.js";
 
-// Submit feedback for an assignment
-export const submitFeedback = (req, res) => {
+// Submit feedback for an assignment using Knex
+export const submitFeedback = async (req, res) => {
   const { assignmentId, patientId, status, comments } = req.body;
 
-  // Validate required fields
   if (!assignmentId || !patientId || !status) {
     return res
       .status(400)
       .json({ message: "assignmentId, patientId, and status are required." });
   }
 
-  // Create a new feedback entry
-  const newFeedback = {
-    id: feedbacks.length + 1,
-    assignmentId,
-    patientId,
-    status, // e.g., "completed", "incomplete", "needs review"
-    comments: comments || "",
-    timestamp: new Date().toISOString(),
-  };
-
-  feedbacks.push(newFeedback);
-
-  return res
-    .status(201)
-    .json({
-      message: "Feedback submitted successfully",
-      feedback: newFeedback,
+  try {
+    // Insert new feedback entry into the "feedbacks" table
+    const [id] = await knex("feedbacks").insert({
+      assignmentId,
+      patientId,
+      status,
+      comments: comments || "",
+      timestamp: new Date().toISOString(),
     });
+    // Retrieve the newly inserted feedback
+    const newFeedback = await knex("feedbacks").where({ id }).first();
+    return res
+      .status(201)
+      .json({
+        message: "Feedback submitted successfully",
+        feedback: newFeedback,
+      });
+  } catch (error) {
+    console.error("Error submitting feedback:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
-// (Optional) Retrieve feedback for a given assignment or patient
-export const getFeedbacks = (req, res) => {
-  // For demonstration, simply return all feedbacks
-  return res.status(200).json(feedbacks);
+// Retrieve all feedbacks (or you can add filtering later)
+export const getFeedbacks = async (req, res) => {
+  try {
+    const feedbacks = await knex("feedbacks").select("*");
+    return res.status(200).json(feedbacks);
+  } catch (error) {
+    console.error("Error retrieving feedbacks:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };

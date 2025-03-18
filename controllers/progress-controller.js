@@ -1,11 +1,9 @@
-// Dummy in-memory storage for progress logs
-let progressLogs = [];
+import knex from "../db/knex.js";
 
-// Controller to log new progress
-export const addProgressLog = (req, res) => {
+// Log new progress using Knex
+export const addProgressLog = async (req, res) => {
   const { patientId, logDate, performanceData } = req.body;
 
-  // Validate required fields
   if (!patientId || !logDate || !performanceData) {
     return res
       .status(400)
@@ -14,31 +12,36 @@ export const addProgressLog = (req, res) => {
       });
   }
 
-  const newLog = {
-    id: progressLogs.length + 1,
-    patientId,
-    logDate,
-    performanceData,
-  };
-
-  progressLogs.push(newLog);
-
-  return res
-    .status(201)
-    .json({ message: "Progress log added successfully", progress: newLog });
+  try {
+    const [id] = await knex("progress_logs").insert({
+      patientId,
+      logDate,
+      performanceData,
+    });
+    const newLog = await knex("progress_logs").where({ id }).first();
+    return res
+      .status(201)
+      .json({ message: "Progress log added successfully", progress: newLog });
+  } catch (error) {
+    console.error("Error adding progress log:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
-// Controller to retrieve progress logs for a patient
-export const getProgressLogs = (req, res) => {
+// Retrieve progress logs for a specific patient using Knex
+export const getProgressLogs = async (req, res) => {
   const { patientId } = req.query;
-
   if (!patientId) {
     return res
       .status(400)
       .json({ message: "patientId query parameter is required." });
   }
 
-  // Filter logs for the specified patient
-  const logs = progressLogs.filter((log) => log.patientId === patientId);
-  return res.status(200).json(logs);
+  try {
+    const logs = await knex("progress_logs").where({ patientId });
+    return res.status(200).json(logs);
+  } catch (error) {
+    console.error("Error retrieving progress logs:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };

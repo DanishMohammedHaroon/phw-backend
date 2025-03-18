@@ -1,8 +1,6 @@
-// Dummy in-memory storage for assignments
-let assignments = [];
+import knex from "../db/knex.js";
 
-// Create a new assignment
-export const createAssignment = (req, res) => {
+export const createAssignment = async (req, res) => {
   const {
     physiotherapistId,
     patientId,
@@ -13,34 +11,44 @@ export const createAssignment = (req, res) => {
     instructions,
   } = req.body;
 
-  // Basic validation
   if (!physiotherapistId || !patientId || !exerciseId) {
-    return res.status(400).json({
-      message: "physiotherapistId, patientId, and exerciseId are required.",
-    });
+    return res
+      .status(400)
+      .json({
+        message: "physiotherapistId, patientId, and exerciseId are required.",
+      });
   }
 
-  // Create a new assignment (In a real app, you'd add timestamps etc.)
-  const newAssignment = {
-    id: assignments.length + 1,
-    physiotherapistId,
-    patientId,
-    exerciseId,
-    repetitions: repetitions || 0,
-    sets: sets || 0,
-    difficulty: difficulty || "N/A",
-    instructions: instructions || "",
-  };
+  try {
+    const [id] = await knex("assignments").insert({
+      physiotherapistId,
+      patientId,
+      exerciseId,
+      repetitions,
+      sets,
+      difficulty,
+      instructions,
+    });
 
-  assignments.push(newAssignment);
-
-  return res.status(201).json({
-    message: "Assignment created successfully",
-    assignment: newAssignment,
-  });
+    const newAssignment = await knex("assignments").where({ id }).first();
+    return res
+      .status(201)
+      .json({
+        message: "Assignment created successfully",
+        assignment: newAssignment,
+      });
+  } catch (error) {
+    console.error("Error creating assignment:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
-// Retrieve all assignments
-export const getAssignments = (req, res) => {
-  return res.status(200).json(assignments);
+export const getAssignments = async (req, res) => {
+  try {
+    const assignments = await knex("assignments").select("*");
+    return res.status(200).json(assignments);
+  } catch (error) {
+    console.error("Error retrieving assignments:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };

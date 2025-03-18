@@ -1,84 +1,101 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import fileStorage from "../utils/file-storage.js";
-
-
-const { readUsers, writeUsers } = fileStorage;
+import knex from "../db/knex.js";
 
 dotenv.config();
 
-// Register a new user and store data in users.json
-const register = (req, res) => {
+export const register = async (req, res) => {
   const { name, email, password, role } = req.body;
 
-  // Basic validation
   if (!name || !email || !password || !role) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
-  // Read existing users from the JSON file
-  const users = readUsers();
+  try {
+    // Check if user already exists
+    const existingUser = await knex("users").where({ email }).first();
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists." });
+    }
 
-  // Check if user already exists
-  const existingUser = users.find((user) => user.email === email);
-  if (existingUser) {
-    return res.status(400).json({ message: "User already exists." });
+    // Insert new user into the database
+    const [id] = await knex("users").insert({ name, email, password, role });
+    const newUser = { id, name, email, role };
+
+    return res
+      .status(201)
+      .json({ message: "User registered successfully", user: newUser });
+  } catch (error) {
+    console.error("Error in registration:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-
-  // Create new user (in a real app, hash the password)
-  const newUser = { id: users.length + 1, name, email, password, role };
-  users.push(newUser);
-
-  // Write updated users back to the file
-  writeUsers(users);
-
-  return res
-    .status(201)
-    .json({ message: "User registered successfully", user: newUser });
 };
 
-// Log in a user by checking against data in users.json
-const login = (req, res) => {
+export const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate input
   if (!email || !password) {
     return res
       .status(400)
       .json({ message: "Email and password are required." });
   }
 
-  // Read users from the file
-  const users = readUsers();
+  try {
+    // Retrieve user from database
+    const user = await knex("users").where({ email, password }).first();
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials." });
+    }
 
-  // Find user (in a real app, compare hashed password)
-  const user = users.find(
-    (user) => user.email === email && user.password === password
-  );
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials." });
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Return user data and token (exclude password in production)
+    return res
+      .status(200)
+      .json({
+        message: "Login successful",
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+  } catch (error) {
+    console.error("Error in login:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-
-  // Generate JWT token
-  const token = jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
-
-  return res.status(200).json({ message: "Login successful", token, user });
 };
 
-// Retrieve a user's profile; token verification middleware is required in a real app
-const getProfile = (req, res) => {
-  // Assuming token verification middleware attaches the user info to req.user
+export const getProfile = async (req, res) => {
   const userId = req.user?.id;
-  const users = readUsers();
-  const user = users.find((user) => user.id === userId);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  if (!userId) {
+    return res.status(400).json({ message: "User ID not provided in token." });
   }
-  return res.status(200).json({ user });
-};
 
-export default { register, login, getProfile };
+  try {
+    const user = await knex("users").where({ id: userId }).first();
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    return res
+      .status(200)
+      .json({
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
