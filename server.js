@@ -8,6 +8,7 @@ import feedbackRoutes from "./routes/feedback-routes.js";
 import exerciseRoutes from "./routes/exercise-routes.js";
 import assignmentRoutes from "./routes/assignment-routes.js";
 import progressRoutes from "./routes/progress-routes.js";
+import messageRoutes from "./routes/message-routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -28,6 +29,7 @@ app.use("/api/exercises", exerciseRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/progress", progressRoutes);
+app.use("/api/messages", messageRoutes);
 
 //test route to check backend
 app.get("/", (_req, res) => {
