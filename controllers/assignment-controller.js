@@ -1,4 +1,3 @@
-import knex from "../db/knex.js";
 // Dummy in-memory storage for assignments
 let assignments = [];
 

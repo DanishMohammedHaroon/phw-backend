@@ -12,7 +12,7 @@ import messageRoutes from "./routes/message-routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5050;
-const knex = initKnex(config);
+const knex = initKnex(config.development);
 
 // Logging middleware: Logs method and URL for every request
 app.use((req, _res, next) => {
