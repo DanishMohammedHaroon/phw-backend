@@ -47,7 +47,7 @@ export const submitFeedback = async (req, res) => {
   }
 };
 
-// Retrieve all feedbacks (or you can add filtering later)
+// Retrieve all feedbacks 
 export const getFeedbacks = async (_req, res) => {
   try {
     const feedbacks = await knex("feedbacks").select("*");
