@@ -5,7 +5,9 @@ import knex from "../db/knex.js";
 dotenv.config();
 
 const register = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  // Now also destructuring physiotherapistId from the request body
+  const { name, email, password, role, physiotherapistId } = req.body;
+
   if (!name || !email || !password || !role) {
     return res.status(400).json({ message: "All fields are required." });
   }
@@ -16,12 +18,29 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists." });
     }
 
-    // Insert new user into the database
-    const [id] = await knex("users").insert({ name, email, password, role });
-    const newUser = { id, name, email, role };
-    return res
-      .status(201)
-      .json({ message: "User registered successfully", user: newUser });
+    // When the role is "client", store the physiotherapistId, otherwise set it to null.
+    const [id] = await knex("users").insert({
+      name,
+      email,
+      password,
+      role,
+      physiotherapistId: role === "client" ? physiotherapistId : null,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    const newUser = await knex("users").where({ id }).first();
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        physiotherapistId: newUser.physiotherapistId,
+      },
+    });
   } catch (error) {
     console.error("Error in registration:", error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -48,18 +67,17 @@ const login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Login successful",
-        token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-      });
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        physiotherapistId: user.physiotherapistId,
+      },
+    });
   } catch (error) {
     console.error("Error in login:", error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -77,21 +95,19 @@ const getProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-    return res
-      .status(200)
-      .json({
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-      });
+    return res.status(200).json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        physiotherapistId: user.physiotherapistId,
+      },
+    });
   } catch (error) {
     console.error("Error fetching profile:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// Export default object containing all functions
 export default { register, login, getProfile };

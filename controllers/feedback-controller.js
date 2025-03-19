@@ -1,25 +1,73 @@
 import knex from "../db/knex.js";
 
 // Submit feedback for an assignment using Knex
-export const submitFeedback = async (req, res) => {
-  const { assignmentId, patientId, status, comments } = req.body;
+// export const submitFeedback = async (req, res) => {
+//   const { assignmentId, patientId, status, comments } = req.body;
 
-  if (!assignmentId || !patientId || !status) {
+//   if (!assignmentId || !patientId || !status) {
+//     return res
+//       .status(400)
+//       .json({ message: "assignmentId, patientId, and status are required." });
+//   }
+
+//   try {
+//     // Insert new feedback entry into the "feedbacks" table
+//     const [id] = await knex("feedbacks").insert({
+//       assignmentId,
+//       patientId,
+//       status,
+//       comments: comments || "",
+//       timestamp: new Date().toISOString(),
+//     });
+//     // Retrieve the newly inserted feedback
+//     const newFeedback = await knex("feedbacks").where({ id }).first();
+//     return res
+//       .status(201)
+//       .json({
+//         message: "Feedback submitted successfully",
+//         feedback: newFeedback,
+//       });
+//   } catch (error) {
+//     console.error("Error submitting feedback:", error);
+//     return res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
+export const submitFeedback = async (req, res) => {
+  const { patientId, physiotherapistId, status, comments } = req.body;
+
+  // Validate required fields
+  if (!patientId || !physiotherapistId || !status) {
     return res
       .status(400)
-      .json({ message: "assignmentId, patientId, and status are required." });
+      .json({
+        message: "patientId, physiotherapistId, and status are required.",
+      });
   }
 
   try {
-    // Insert new feedback entry into the "feedbacks" table
+    // Verify that the client exists and is assigned to the given physiotherapist
+    const client = await knex("users")
+      .where({ id: patientId, role: "client" })
+      .first();
+
+    if (!client) {
+      return res.status(404).json({ message: "Client not found." });
+    }
+    if (client.physiotherapistId !== physiotherapistId) {
+      return res
+        .status(403)
+        .json({ message: "Client is not assigned to this physiotherapist." });
+    }
+
     const [id] = await knex("feedbacks").insert({
-      assignmentId,
       patientId,
+      physiotherapistId,
       status,
       comments: comments || "",
       timestamp: new Date().toISOString(),
     });
-    // Retrieve the newly inserted feedback
+
     const newFeedback = await knex("feedbacks").where({ id }).first();
     return res
       .status(201)
@@ -33,8 +81,9 @@ export const submitFeedback = async (req, res) => {
   }
 };
 
+
 // Retrieve all feedbacks (or you can add filtering later)
-export const getFeedbacks = async (req, res) => {
+export const getFeedbacks = async (_req, res) => {
   try {
     const feedbacks = await knex("feedbacks").select("*");
     return res.status(200).json(feedbacks);
