@@ -45,12 +45,31 @@ export const createAssignment = async (req, res) => {
   }
 };
 
-export const getAssignments = async (_req, res) => {
+export const getAssignments = async (req, res) => {
   try {
-    const assignments = await knex("assignments").select("*");
+    const { patientId } = req.query;
+    let assignments;
+    if (patientId) {
+      // Fetch assignments only for the specified patient
+      assignments = await knex("assignments").where({ patientId });
+    } else {
+      // If no patientId is provided, fetch all assignments (or you can return an error)
+      assignments = await knex("assignments").select("*");
+    }
     return res.status(200).json(assignments);
   } catch (error) {
     console.error("Error retrieving assignments:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const deleteAssignment = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await knex("assignments").where({ id }).del();
+    return res.status(200).json({ message: "Assignment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting assignment:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
