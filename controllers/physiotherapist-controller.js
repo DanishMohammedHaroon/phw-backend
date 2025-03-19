@@ -1,6 +1,6 @@
 import knex from "../db/knex.js";
 
-export const getPhysiotherapists = async (req, res) => {
+export const getPhysiotherapists = async (_req, res) => {
   try {
     // Query users table for physiotherapists
     const physios = await knex("users")

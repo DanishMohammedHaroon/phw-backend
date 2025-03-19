@@ -1,7 +1,7 @@
 import knex from "../db/knex.js";
 
 // Get all exercises from the database
-export const getAllExercises = async (req, res) => {
+export const getAllExercises = async (_req, res) => {
   try {
     // Select all columns from the "exercises" table
     const exercises = await knex("exercises").select("*");

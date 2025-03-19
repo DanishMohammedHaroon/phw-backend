@@ -1,5 +1,9 @@
 import express from "express";
-import { submitFeedback, getFeedbacks } from "../controllers/feedback-controller.js";
+import {
+  submitFeedback,
+  getFeedbacks,
+  getFeedbackByPhysio,
+} from "../controllers/feedback-controller.js";
 
 const router = express.Router();
 
@@ -8,5 +12,8 @@ router.post("/", submitFeedback);
 
 // (Optional) Route to get feedbacks
 router.get("/", getFeedbacks);
+
+//Route to get feedbacks by physio
+router.get("/physio", getFeedbackByPhysio);
 
 export default router;

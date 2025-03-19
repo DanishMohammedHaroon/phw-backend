@@ -10,6 +10,7 @@ import assignmentRoutes from "./routes/assignment-routes.js";
 import progressRoutes from "./routes/progress-routes.js";
 import messageRoutes from "./routes/message-routes.js";
 import physiotherapistRoutes from "./routes/physiotherapist-routes.js";
+import usersRoutes from "./routes/users-routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -32,6 +33,7 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/physiotherapists", physiotherapistRoutes);
+app.use("/api/users", usersRoutes);
 
 //test route to check backend
 app.get("/", (_req, res) => {
