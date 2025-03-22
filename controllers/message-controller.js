@@ -3,6 +3,7 @@ import knex from "../db/knex.js";
 const formatDateTime = (isoString) =>
   isoString.replace("T", " ").substring(0, 19);
 
+//POST message
 export const sendMessage = async (req, res) => {
   const { from, to, message, timestamp } = req.body;
 
@@ -27,7 +28,7 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-// Retrieve messages for a specific user
+//GET message filtered by specific user
 export const getMessages = async (req, res) => {
   const { clientId, physioId } = req.query;
   if (!clientId || !physioId) {

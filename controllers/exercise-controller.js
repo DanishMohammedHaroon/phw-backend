@@ -1,9 +1,9 @@
 import knex from "../db/knex.js";
 
-// Get all exercises from the database
+// GET all exercises from the database
 export const getAllExercises = async (_req, res) => {
   try {
-    // Select all columns from the "exercises" table
+
     const exercises = await knex("exercises").select("*");
     return res.status(200).json(exercises);
   } catch (error) {
@@ -12,11 +12,11 @@ export const getAllExercises = async (_req, res) => {
   }
 };
 
-// Get a single exercise by its exercise_id
+// GET exercise by exercise_id
 export const getExerciseById = async (req, res) => {
   const { id } = req.params;
   try {
-    // Assuming the unique identifier is stored in the "exercise_id" column
+
     const exercise = await knex("exercises").where({ exercise_id: id }).first();
     if (!exercise) {
       return res.status(404).json({ message: "Exercise not found" });

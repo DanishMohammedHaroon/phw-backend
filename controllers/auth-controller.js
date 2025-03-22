@@ -18,7 +18,7 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists." });
     }
 
-    // When the role is "client", store the physiotherapistId, otherwise set it to null.
+
     const [id] = await knex("users").insert({
       name,
       email,

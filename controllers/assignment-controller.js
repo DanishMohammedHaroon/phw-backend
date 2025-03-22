@@ -50,10 +50,10 @@ export const getAssignments = async (req, res) => {
     const { patientId } = req.query;
     let assignments;
     if (patientId) {
-      // Fetch assignments only for the specified patient
+  
       assignments = await knex("assignments").where({ patientId });
     } else {
-      // If no patientId is provided, fetch all assignments (or you can return an error)
+
       assignments = await knex("assignments").select("*");
     }
     return res.status(200).json(assignments);

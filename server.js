@@ -34,7 +34,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/images", express.static("public/images"));
 
-//REST API
+
 app.use("/api/auth", authRoutes);
 app.use("/api/exercises", exerciseRoutes);
 app.use("/api/assignments", assignmentRoutes);
@@ -58,17 +58,16 @@ app.use((err, _req, res, _next) => {
 // Setup Socket.IO connection
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
-  // You can join rooms based on user id or conversation id.
-  // For example, if the client sends a "join" event with a room:
+
   socket.on("join", (room) => {
     console.log(`Socket ${socket.id} joining room: ${room}`);
     socket.join(room);
   });
-  // When a message is sent, broadcast it to the room.
+
   socket.on("sendMessage", (data) => {
-    // data should include: { from, to, message, room }
+
     console.log("Message received:", data);
-    // Emit the message to everyone in the room (except the sender if desired)
+
     socket.to(data.room).emit("receiveMessage", data);
   });
 

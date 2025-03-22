@@ -1,4 +1,3 @@
-// middleware/verifyToken.js
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -20,9 +19,9 @@ const verifyToken = (req, res, next) => {
   // Verify the token using the secret key from your .env file
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // Attach decoded token data (like user id) to the request object
+ 
     req.user = decoded;
-    next(); // Continue to the next middleware or route handler
+    next(); 
   } catch (error) {
     return res.status(401).json({ message: "Invalid token" });
   }

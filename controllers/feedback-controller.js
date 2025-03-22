@@ -3,10 +3,11 @@ import knex from "../db/knex.js";
 const formatDateTime = (isoString) =>
   isoString.replace("T", " ").substring(0, 19);
 
+//POST feedback
 export const submitFeedback = async (req, res) => {
   const { patientId, physiotherapistId, status, comments } = req.body;
 
-  // Validate required fields
+
   if (!patientId || !physiotherapistId || !status) {
     return res.status(400).json({
       message: "patientId, physiotherapistId, and status are required.",
@@ -14,7 +15,7 @@ export const submitFeedback = async (req, res) => {
   }
 
   try {
-    // Verify that the client exists and is assigned to the given physiotherapist
+
     const client = await knex("users")
       .where({ id: patientId, role: "client" })
       .first();
@@ -47,7 +48,7 @@ export const submitFeedback = async (req, res) => {
   }
 };
 
-// Retrieve all feedbacks 
+//GET all feedbacks 
 export const getFeedbacks = async (_req, res) => {
   try {
     const feedbacks = await knex("feedbacks").select("*");
@@ -58,6 +59,7 @@ export const getFeedbacks = async (_req, res) => {
   }
 };
 
+//GET feedback by physiotherapistId
 export const getFeedbackByPhysio = async (req, res) => {
   const { physiotherapistId } = req.query;
   if (!physiotherapistId) {

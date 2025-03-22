@@ -1,6 +1,6 @@
 import knex from "../db/knex.js";
 
-// Log new progress using Knex
+//POST Progress
 export const addProgressLog = async (req, res) => {
   const { patientId, logDate, performanceData } = req.body;
 
@@ -28,7 +28,7 @@ export const addProgressLog = async (req, res) => {
   }
 };
 
-// Retrieve progress logs for a specific patient using Knex
+//GET Progress
 export const getProgressLogs = async (req, res) => {
   const { patientId } = req.query;
   if (!patientId) {

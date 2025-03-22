@@ -1,8 +1,9 @@
 import knex from "../db/knex.js";
 
+//GET all Physiotherapists
 export const getPhysiotherapists = async (_req, res) => {
   try {
-    // Query users table for physiotherapists
+
     const physios = await knex("users")
       .where({ role: "physio_therapist" })
       .select("id", "name", "email");
@@ -13,10 +14,11 @@ export const getPhysiotherapists = async (_req, res) => {
   }
 };
 
+//GET Physiotherapists by id
 export const getPhysiotherapistById = async (req, res) => {
   const { id } = req.params;
   try {
-    // Fetch the user from the "users" table with the given id and ensure the role is 'physio_therapist'
+
     const physio = await knex("users")
       .where({ id, role: "physio_therapist" })
       .first();

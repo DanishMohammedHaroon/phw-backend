@@ -4,6 +4,7 @@ import { getPhysiotherapists, getPhysiotherapistById } from "../controllers/phys
 const router = express.Router();
 
 router.get("/", getPhysiotherapists);
+
 router.get("/:id", getPhysiotherapistById);
 
 export default router;

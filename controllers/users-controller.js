@@ -1,5 +1,6 @@
 import knex from "../db/knex.js";
 
+//GET all users
 export const getAllUsers = async (_req, res) => {
   try {
     const users = await knex("users").select("*");
@@ -10,7 +11,7 @@ export const getAllUsers = async (_req, res) => {
   }
 };
 
-// In case we only need the clients 
+// GET users filtered as clients
 export const getClients = async (_req, res) => {
   try {
     const clients = await knex("users").where({ role: "client" }).select("*");
