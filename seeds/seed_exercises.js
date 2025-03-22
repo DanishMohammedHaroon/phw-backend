@@ -356,7 +356,7 @@ export async function seed(knex) {
       exercise_details: JSON.stringify({
         force: "neutral",
         mechanic: "compound",
-        equipment: "none",
+        equipment: "Resistance band/ Row machine",
       }),
       category: "physiotherapy",
       images: JSON.stringify(["Seated_Row/0.jpg"]),
