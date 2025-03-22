@@ -32,6 +32,7 @@ app.use((req, _res, next) => {
 //middleware
 app.use(cors());
 app.use(express.json());
+app.use("/images", express.static("public/images"));
 
 //REST API
 app.use("/api/auth", authRoutes);
@@ -76,7 +77,6 @@ io.on("connection", (socket) => {
   });
 });
  
-
 server.listen(PORT, () => {
  console.log(`Server is running on port ${PORT}`);
 });
